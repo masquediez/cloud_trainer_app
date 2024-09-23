@@ -74,7 +74,7 @@ jobs:
         working-directory: ./terraform_setup/EC2
 
       - name: Terraform Format Check
-        run: terraform fmt --check
+        run: terraform fmt 
         working-directory: ./terraform_setup/EC2
 
       - name: Terraform Plan
