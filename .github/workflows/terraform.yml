@@ -27,23 +27,23 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: ./terraform_setup/vpc
+        working-directory: ./terraform_setup/VPC
 
       - name: Terraform Format Check
         run: terraform fmt --check
-        working-directory: ./terraform_setup/vpc
+        working-directory: ./terraform_setup/VPC
 
       - name: Terraform Plan
         run: terraform plan
-        working-directory: ./terraform_setup/vpc
+        working-directory: ./terraform_setup/VPC
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: ./terraform_setup/vpc
+        working-directory: ./terraform_setup/VPC
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-        working-directory: ./terraform_setup/vpc
+        working-directory: ./terraform_setup/VPC
 
   terraform-ec2:
     runs-on: ubuntu-latest
@@ -67,23 +67,23 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: ./terraform_setup/ec2
+        working-directory: ./terraform_setup/EC2
 
       - name: Terraform Format Check
         run: terraform fmt --check
-        working-directory: ./terraform_setup/ec2
+        working-directory: ./terraform_setup/EC2
 
       - name: Terraform Plan
         run: terraform plan
-        working-directory: ./terraform_setup/ec2
+        working-directory: ./terraform_setup/EC2
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: ./terraform_setup/ec2
+        working-directory: ./terraform_setup/EC2
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-        working-directory: ./terraform_setup/ec2
+        working-directory: ./terraform_setup/EC2
 
       - name: Extract IP addresses
         id: extract_ips
