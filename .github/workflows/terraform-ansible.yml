@@ -1,4 +1,4 @@
-name: Terraform and Ansible Workflow 
+name: Terraform and Ansible Workflow
 
 on:
   push:
@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: actions-Ansible  # Apunta a la rama correcta
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -55,6 +57,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: actions-Ansible  # Apunta a la rama correcta
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -102,6 +106,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: actions-Ansible  # Apunta a la rama correcta
+
+      - name: List files to verify checkout
+        run: ls -R
+        working-directory: ./ansible  # Listar archivos en la carpeta ansible
 
       - name: Set up Ansible
         run: |
