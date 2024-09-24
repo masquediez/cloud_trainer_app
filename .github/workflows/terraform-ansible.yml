@@ -126,5 +126,5 @@ jobs:
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
           ANSIBLE_SSH_PRIVATE_KEY_FILE: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
-        run: ansible-playbook -i "${{ env.EC2_IP }}," ansible/playbook.yaml
+        run: ansible-playbook -i "${{ env.EC2_IP }}" ansible/playbook.yaml
         working-directory: ./ansible
