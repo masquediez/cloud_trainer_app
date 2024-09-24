@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: actions-Ansible  # Apunta a la rama correcta
+          ref: actions-Ansible
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -29,22 +29,6 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: ./terraform_setup/VPC
-
-      - name: Terraform Format
-        run: terraform fmt
-        working-directory: ./terraform_setup/VPC
-
-      - name: Terraform Format Check
-        run: terraform fmt --check
-        working-directory: ./terraform_setup/VPC
-
-      - name: Terraform Plan
-        run: terraform plan
-        working-directory: ./terraform_setup/VPC
-
-      - name: Terraform Validate
-        run: terraform validate
         working-directory: ./terraform_setup/VPC
 
       - name: Terraform Apply
@@ -58,7 +42,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: actions-Ansible  # Apunta a la rama correcta
+          ref: actions-Ansible
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -77,18 +61,6 @@ jobs:
         run: terraform init
         working-directory: ./terraform_setup/EC2
 
-      - name: Terraform Format Check
-        run: terraform fmt 
-        working-directory: ./terraform_setup/EC2
-
-      - name: Terraform Plan
-        run: terraform plan
-        working-directory: ./terraform_setup/EC2
-
-      - name: Terraform Validate
-        run: terraform validate
-        working-directory: ./terraform_setup/EC2
-
       - name: Terraform Apply
         run: terraform apply -auto-approve
         working-directory: ./terraform_setup/EC2
@@ -97,11 +69,11 @@ jobs:
         run: terraform output -json
         working-directory: ./terraform_setup/EC2
 
-      - name: Extract IP address
+      - name: Extract IP addresses
         id: extract_ip
         run: |
-          IP_ADDRESS=$(terraform output -json instance_ip | jq -r '.[0]')
-          echo "EC2_IP=$IP_ADDRESS" >> $GITHUB_ENV
+          IP_ADDRESSES=$(terraform output -json instance_ip | jq -r '.[]')
+          echo "EC2_IPS=$IP_ADDRESSES" >> $GITHUB_ENV
         working-directory: ./terraform_setup/EC2
 
   ansible-deploy:
@@ -111,11 +83,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: actions-Ansible  
-
-      - name: List files to verify checkout
-        run: ls -R
-        working-directory: ./ansible  
+          ref: actions-Ansible
 
       - name: Set up Ansible
         run: |
@@ -126,5 +94,7 @@ jobs:
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
           ANSIBLE_SSH_PRIVATE_KEY_FILE: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
-        run: ansible-playbook -i hosts.ini playbook.yaml
-        working-directory: ./ansible
+        run: |
+          for IP in ${{ env.EC2_IPS }}; do
+            ansible-playbook -i "${IP}," ansible/playbook.yaml --private-key="${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}" -u ec2-user
+          done
