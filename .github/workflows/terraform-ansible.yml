@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: actions-Ansible
+          ref: actions-Ansible  # Apunta a la rama correcta
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -29,6 +29,22 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+        working-directory: ./terraform_setup/VPC
+
+      - name: Terraform Format
+        run: terraform fmt
+        working-directory: ./terraform_setup/VPC
+
+      - name: Terraform Format Check
+        run: terraform fmt --check
+        working-directory: ./terraform_setup/VPC
+
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: ./terraform_setup/VPC
+
+      - name: Terraform Validate
+        run: terraform validate
         working-directory: ./terraform_setup/VPC
 
       - name: Terraform Apply
@@ -42,7 +58,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: actions-Ansible
+          ref: actions-Ansible  # Apunta a la rama correcta
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -59,6 +75,18 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+        working-directory: ./terraform_setup/EC2
+
+      - name: Terraform Format Check
+        run: terraform fmt 
+        working-directory: ./terraform_setup/EC2
+
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: ./terraform_setup/EC2
+
+      - name: Terraform Validate
+        run: terraform validate
         working-directory: ./terraform_setup/EC2
 
       - name: Terraform Apply
@@ -73,7 +101,9 @@ jobs:
         id: extract_ip
         run: |
           IP_ADDRESSES=$(terraform output -json instance_ip | jq -r '.[]')
-          echo "EC2_IPS=$IP_ADDRESSES" >> $GITHUB_ENV
+          echo "EC2_IPS<<EOF" >> $GITHUB_ENV
+          echo "$IP_ADDRESSES" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
         working-directory: ./terraform_setup/EC2
 
   ansible-deploy:
