@@ -1,4 +1,4 @@
-name: Terraform and Ansible Workflow
+name: Terraform and Ansible Workflow 
 
 on:
   push:
@@ -95,3 +95,22 @@ jobs:
           IP_ADDRESSES=$(terraform output -json instance_ip)
           echo "EC2_IPS=$IP_ADDRESSES" >> $GITHUB_ENV
         working-directory: ./terraform_setup/EC2
+
+  ansible-deploy:
+    runs-on: ubuntu-latest
+    needs: terraform-ec2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ansible
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ansible
+
+      - name: Run Ansible Playbook
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
+          ANSIBLE_SSH_PRIVATE_KEY_FILE: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }} # Si necesitas una clave SSH
+        run: ansible-playbook -i "your_ec2_ip," /path/to/your/playbook.yml
+        working-directory: ./ansible
