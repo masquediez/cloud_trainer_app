@@ -100,10 +100,8 @@ jobs:
       - name: Extract IP addresses
         id: extract_ip
         run: |
-          IP_ADDRESSES=$(terraform output -json instance_ip | jq -r '.[]')
-          echo "EC2_IPS<<EOF" >> $GITHUB_ENV
-          echo "$IP_ADDRESSES" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+         IP_ADDRESSES=$(echo '${{ steps.terraform_output.outputs.instance_ip }}' | jq -r '.[]')
+         echo "EC2_IPS=$IP_ADDRESSES" >> $GITHUB_ENV
         working-directory: ./terraform_setup/EC2
 
   ansible-deploy:
