@@ -3,7 +3,7 @@ name: Terraform and Ansible Workflow
 on:
   push:
     branches:
-      - main
+      - actions-Ansible
 
 jobs:
   terraform-vpc:
