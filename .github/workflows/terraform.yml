@@ -89,11 +89,11 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: ./terraform_setup/EC2
 
-      - name: Extract IP addresses
-        id: extract_ips
+      - name: Extract IP address
+        id: extract_ip
         run: |
-          IP_ADDRESSES=$(terraform output -json instance_ip)
-          echo "EC2_IPS=$IP_ADDRESSES" >> $GITHUB_ENV
+          IP_ADDRESS=$(terraform output -json instance_ip | jq -r '.[0]')
+          echo "EC2_IP=$IP_ADDRESS" >> $GITHUB_ENV
         working-directory: ./terraform_setup/EC2
 
   ansible-deploy:
@@ -111,6 +111,6 @@ jobs:
       - name: Run Ansible Playbook
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
-          ANSIBLE_SSH_PRIVATE_KEY_FILE: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }} # Si necesitas una clave SSH
-        run: ansible-playbook -i "your_ec2_ip," /path/to/your/playbook.yml
+          ANSIBLE_SSH_PRIVATE_KEY_FILE: ${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}
+        run: ansible-playbook -i "${{ env.EC2_IP }}," ansible/playbook.yml
         working-directory: ./ansible
