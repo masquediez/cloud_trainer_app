@@ -107,11 +107,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: actions-Ansible  # Apunta a la rama correcta
+          ref: actions-Ansible  
 
       - name: List files to verify checkout
         run: ls -R
-        working-directory: ./ansible  # Listar archivos en la carpeta ansible
+        working-directory: ./ansible  
 
       - name: Set up Ansible
         run: |
