@@ -109,13 +109,13 @@ jobs:
 
       - name: Run Ansible Playbook for Nginx
         run: |
-          ansible-playbook ansible_workflow/playbook.yml -i "${{ env.NGINX_IP }}," -u ${{ secrets.SSH_USER }} --private-key private_key.pem --extra-vars "host=nginx"
+          ansible-playbook ansible_workflow/playbook.yaml -i "${{ env.NGINX_IP }}," -u ${{ secrets.SSH_USER }} --private-key private_key.pem --extra-vars "host=nginx"
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
 
       - name: Run Ansible Playbook for Httpd
         run: |
-          ansible-playbook ansible_workflow/playbook.yml -i "${{ env.HTTPD_IP }}," -u ${{ secrets.SSH_USER }} --private-key private_key.pem --extra-vars "host=httpd"
+          ansible-playbook ansible_workflow/playbook.yaml -i "${{ env.HTTPD_IP }}," -u ${{ secrets.SSH_USER }} --private-key private_key.pem --extra-vars "host=httpd"
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
 
