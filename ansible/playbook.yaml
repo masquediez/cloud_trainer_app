@@ -1,48 +1,43 @@
----
-- name: Deploy Docker containers
-  hosts: all
+- hosts: nginx
   become: yes
-  vars:
-    db_name: mydbn8n
-    db_user: myusern8n
-    db_password: mypasswordn8n
-    db_host: "{{ ansible_host }}"
-    db_port: 5432
-    jwt_secret: your_jwt_secret
-    node_env: production
-
   tasks:
-    - name: Install Docker
+    - name: Install Nginx
       apt:
-        name: docker.io
+        name: nginx
         state: present
-      when: ansible_os_family == "Debian"
+        update_cache: yes
 
-    - name: Install Docker Compose
-      get_url:
-        url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)
-        dest: /usr/local/bin/docker-compose
-        mode: "u+x"
+    - name: Configure Nginx to listen on port 8080
+      lineinfile:
+        path: /etc/nginx/sites-available/default
+        regexp: 'listen\s+80\s*;'
+        line: "listen 8080 default_server;"
+      notify: Restart Nginx
 
-    - name: Copy docker-compose.yml to the host
-      copy:
-        src: ../docker-compose.yaml
-        dest: /home/ubuntu/docker-compose.yaml
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
 
-    - name: Create .env file for the backend
-      copy:
-        content: |
-          DB_NAME={{ db_name }}
-          DB_USER={{ db_user }}
-          DB_PASSWORD={{ db_password }}
-          DB_HOST={{ db_host }}
-          DB_PORT={{ db_port }}
-          DB_DIALECT=postgres
-          JWT_SECRET={{ jwt_secret }}
-          PORT=5050
-        dest: /home/ubuntu/.env
+- hosts: httpd
+  become: yes
+  tasks:
+    - name: Install Httpd
+      yum:
+        name: httpd
+        state: present
+        update_cache: yes
 
-    - name: Start Docker containers
-      command: docker-compose up -d
-      args:
-        chdir: /home/ubuntu
+    - name: Configure Httpd to listen on port 8090
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^Listen\s+80'
+        line: "Listen 8090"
+      notify: Restart Httpd
+
+  handlers:
+    - name: Restart Httpd
+      service:
+        name: httpd
+        state: restarted
