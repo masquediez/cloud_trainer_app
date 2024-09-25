@@ -3,7 +3,7 @@ name: Terraform and Ansible Workflow
 on:
   push:
     branches:
-      - actions-Ansible
+      - main
 
 jobs:
   terraform-vpc:
@@ -100,8 +100,8 @@ jobs:
       - name: Extract IP addresses
         id: extract_ip
         run: |
-         IP_ADDRESSES=$(echo '${{ steps.terraform_output.outputs.instance_ip }}' | jq -r '.[]')
-         echo "EC2_IPS=$IP_ADDRESSES" >> $GITHUB_ENV
+          IP_ADDRESSES=$(echo '${{ steps.terraform_output.outputs.instance_ip }}' | jq -r '.[]')
+          echo "EC2_IPS=$IP_ADDRESSES" >> $GITHUB_ENV
         working-directory: ./terraform_setup/EC2
 
   ansible-deploy:
@@ -120,10 +120,13 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          chmod 400 ~/.ssh/id_rsa
 
-      - name: Disable SSH Host Key Checking
-        run: echo "Host *\nStrictHostKeyChecking no\nUserKnownHostsFile=/dev/null" >> ~/.ssh/config
+      - name: Add SSH known_hosts
+        run: |
+          for ip in ${{ env.EC2_IPS }}; do
+            ssh-keyscan -H $ip >> ~/.ssh/known_hosts;
+          done
 
       - name: Run Ansible Playbook
         run: |
