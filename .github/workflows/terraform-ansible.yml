@@ -110,11 +110,9 @@ jobs:
           echo "${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-      - name: Add EC2 IPs to known_hosts
+      - name: Disable Host Key Checking
         run: |
-          for ip in ${{ env.EC2_IPS }}; do
-            ssh-keyscan -H $ip >> ~/.ssh/known_hosts
-          done
+          echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 
       - name: Run Ansible Playbook
         run: |
