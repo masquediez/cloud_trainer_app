@@ -1,0 +1,43 @@
+- hosts: nginx
+  become: yes
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Configure Nginx to listen on port 8080
+      lineinfile:
+        path: /etc/nginx/sites-available/default
+        regexp: 'listen\s+80\s*;'
+        line: "listen 8080 default_server;"
+      notify: Restart Nginx
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+
+- hosts: httpd
+  become: yes
+  tasks:
+    - name: Install Httpd
+      yum:
+        name: httpd
+        state: present
+        update_cache: yes
+
+    - name: Configure Httpd to listen on port 8090
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^Listen\s+80'
+        line: "Listen 8090"
+      notify: Restart Httpd
+
+  handlers:
+    - name: Restart Httpd
+      service:
+        name: httpd
+        state: restarted
