@@ -3,7 +3,7 @@ name: Terraform and Ansible Workflow
 on:
   push:
     branches:
-      - main
+      - actions-Ansible
 
 jobs:
   terraform-vpc:
@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: actions-Ansible  # Apunta a la rama correcta
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -27,23 +29,27 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: ./terraform_setup/vpc
+        working-directory: ./terraform_setup/VPC
+
+      - name: Terraform Format
+        run: terraform fmt
+        working-directory: ./terraform_setup/VPC
 
       - name: Terraform Format Check
         run: terraform fmt --check
-        working-directory: ./terraform_setup/vpc
+        working-directory: ./terraform_setup/VPC
 
       - name: Terraform Plan
         run: terraform plan
-        working-directory: ./terraform_setup/vpc
+        working-directory: ./terraform_setup/VPC
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: ./terraform_setup/vpc
+        working-directory: ./terraform_setup/VPC
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-        working-directory: ./terraform_setup/vpc
+        working-directory: ./terraform_setup/VPC
 
   terraform-ec2:
     runs-on: ubuntu-latest
@@ -51,6 +57,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: actions-Ansible  # Apunta a la rama correcta
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -67,30 +75,34 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: ./terraform_setup/ec2
+        working-directory: ./terraform_setup/EC2
 
       - name: Terraform Format Check
         run: terraform fmt
-        working-directory: ./terraform_setup/ec2
+        working-directory: ./terraform_setup/EC2
 
       - name: Terraform Plan
         run: terraform plan
-        working-directory: ./terraform_setup/ec2
+        working-directory: ./terraform_setup/EC2
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: ./terraform_setup/ec2
+        working-directory: ./terraform_setup/EC2
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-        working-directory: ./terraform_setup/ec2
+        working-directory: ./terraform_setup/EC2
+
+      - name: Show Terraform Output
+        run: terraform output -json
+        working-directory: ./terraform_setup/EC2
 
       - name: Extract IP addresses
-        id: extract_ips
+        id: extract_ip
         run: |
-          echo "NGINX_IP=$(terraform output -raw nginx_instance_ip)" >> $GITHUB_ENV
-          echo "HTTPD_IP=$(terraform output -raw httpd_instance_ip)" >> $GITHUB_ENV
-        working-directory: ./terraform_setup/ec2
+         IP_ADDRESSES=$(echo '${{ steps.terraform_output.outputs.instance_ip }}' | jq -r '.[]')
+         echo "EC2_IPS=$IP_ADDRESSES" >> $GITHUB_ENV
+        working-directory: ./terraform_setup/EC2
 
   ansible-deploy:
     runs-on: ubuntu-latest
@@ -110,9 +122,8 @@ jobs:
           echo "${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-      - name: Disable Host Key Checking
-        run: |
-          echo -e "Host *\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+      - name: Disable SSH Host Key Checking
+        run: echo "Host *\nStrictHostKeyChecking no\nUserKnownHostsFile=/dev/null" >> ~/.ssh/config
 
       - name: Run Ansible Playbook
         run: |
