@@ -73,7 +73,6 @@ jobs:
       - name: Extract IP addresses
         id: extract_ip
         run: |
-          # Suponiendo que tienes una salida llamada 'instance_ip' en tu configuración de Terraform
           INSTANCE_IPS=$(echo '${{ steps.terraform_output.outputs.instance_ip }}' | jq -r '.[]')
           echo "INSTANCE_IPS=$INSTANCE_IPS" >> $GITHUB_ENV
         working-directory: ./terraform_setup/EC2
@@ -92,23 +91,15 @@ jobs:
 
       - name: Create hosts.ini dynamically
         run: |
-          echo "[nginx]" > ansible/hosts.ini
-          echo "nginx ansible_host=${{ env.INSTANCE_IPS }} ansible_user=ubuntu ansible_ssh_private_key_file=private_key.pem" >> ansible/hosts.ini
-          echo "[httpd]" >> ansible/hosts.ini
-          echo "httpd ansible_host=${{ env.INSTANCE_IPS }} ansible_user=ubuntu ansible_ssh_private_key_file=private_key.pem" >> ansible/hosts.ini
+          echo "[web]" > ansible/hosts.ini
+          echo "web ansible_host=${{ env.INSTANCE_IPS }} ansible_user=ubuntu ansible_ssh_private_key_file=private_key.pem" >> ansible/hosts.ini
 
       - name: Install Ansible
         run: sudo apt-get update && sudo apt-get install -y ansible
 
-      - name: Run Ansible Playbook for Nginx
+      - name: Run Ansible Playbook
         run: |
-          ansible-playbook ansible_workflow/playbook.yml -i ansible/hosts.ini -u ubuntu --private-key private_key.pem --limit nginx
-        env:
-          ANSIBLE_HOST_KEY_CHECKING: "False"
-
-      - name: Run Ansible Playbook for Httpd
-        run: |
-          ansible-playbook ansible_workflow/playbook.yml -i ansible/hosts.ini -u ubuntu --private-key private_key.pem --limit httpd
+          ansible-playbook ansible_workflow/playbook.yml -i ansible/hosts.ini -u ubuntu --private-key private_key.pem
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
 
