@@ -78,32 +78,26 @@ jobs:
         working-directory: ./terraform_setup/EC2
 
   ansible-deploy:
-    runs-on: ubuntu-latest
-    needs: terraform-ec2
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
- 
-      - name: Add SSH Key
-        run: |
-          echo "${{ secrets.AWS_SSH_KEY }}" > private_key.pem
-          chmod 600 private_key.pem
+   runs-on: ubuntu-latest
+   needs: terraform-ec2
+   steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Create hosts.ini dynamically
-        run: |
-          echo "[nginx]" > ansible/hosts.ini
-          echo "nginx ansible_host=${{ env.NGINX_IP }} ansible_user=ubuntu ansible_ssh_private_key_file=private_key.pem" >> ansible/hosts.ini
-          echo "[httpd]" >> ansible/hosts.ini
-          echo "httpd ansible_host=${{ env.HTTPD_IP }} ansible_user=ubuntu ansible_ssh_private_key_file=private_key.pem" >> ansible/hosts.ini
+    - name: Add SSH Key
+      run: |
+        echo "${{ secrets.AWS_SSH_KEY }}" > private_key.pem
+        chmod 600 private_key.pem
 
-      - name: Install Ansible
-        run: sudo apt-get update && sudo apt-get install -y ansible
+    - name: Install Ansible
+      run: sudo apt-get update && sudo apt-get install -y ansible
 
-      - name: Run Ansible Playbook
-        run: |
-          ansible-playbook ansible_workflow/playbook.yml -i ansible/hosts.ini -u ubuntu --private-key private_key.pem
-        env:
-          ANSIBLE_HOST_KEY_CHECKING: "False"
+    - name: Run Ansible Playbook
+      run: |
+        IP_ADDRESSES="${{ steps.extract_ip.outputs.instance_ip }}"
+        ansible-playbook ansible_workflow/playbook.yml -i "$IP_ADDRESSES," -u ${{ secrets.SSH_USER }} --private-key private_key.pem
+      env:
+        ANSIBLE_HOST_KEY_CHECKING: "False"
 
-      - name: Clean up
-        run: rm -f private_key.pem
+    - name: Clean up
+      run: rm -f private_key.pem
