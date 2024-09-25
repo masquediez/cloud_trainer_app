@@ -91,8 +91,10 @@ jobs:
 
       - name: Create hosts.ini dynamically
         run: |
-          echo "[web]" > ansible/hosts.ini
-          echo "web ansible_host=${{ env.INSTANCE_IPS }} ansible_user=ubuntu ansible_ssh_private_key_file=private_key.pem" >> ansible/hosts.ini
+          echo "[nginx]" > ansible/hosts.ini
+          echo "nginx ansible_host=${{ env.NGINX_IP }} ansible_user=ubuntu ansible_ssh_private_key_file=private_key.pem" >> ansible/hosts.ini
+          echo "[httpd]" >> ansible/hosts.ini
+          echo "httpd ansible_host=${{ env.HTTPD_IP }} ansible_user=ubuntu ansible_ssh_private_key_file=private_key.pem" >> ansible/hosts.ini
 
       - name: Install Ansible
         run: sudo apt-get update && sudo apt-get install -y ansible
