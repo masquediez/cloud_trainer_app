@@ -98,26 +98,24 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Add SSH Key
-        run: |
-          echo "${{ secrets.AWS_SSH_KEY }}" > private_key.pem
-          chmod 600 private_key.pem
+        with:
+          ref: actions-Ansible
 
       - name: Install Ansible
-        run: sudo apt-get update && sudo apt-get install -y ansible
+        run: sudo apt update && sudo apt install -y ansible
 
-      - name: Run Ansible Playbook for Nginx
+      - name: Add SSH key for Ansible
         run: |
-          ansible-playbook ansible_workflow/playbook.yaml -i "${{ env.NGINX_IP }}," -u ${{ secrets.SSH_USER }} --private-key private_key.pem --extra-vars "host=nginx"
-        env:
-          ANSIBLE_HOST_KEY_CHECKING: "False"
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
-      - name: Run Ansible Playbook for Httpd
+      - name: Add EC2 IPs to known_hosts
         run: |
-          ansible-playbook ansible_workflow/playbook.yaml -i "${{ env.HTTPD_IP }}," -u ${{ secrets.SSH_USER }} --private-key private_key.pem --extra-vars "host=httpd"
-        env:
-          ANSIBLE_HOST_KEY_CHECKING: "False"
+          for ip in ${{ env.EC2_IPS }}; do
+            ssh-keyscan -H $ip >> ~/.ssh/known_hosts
+          done
 
-      - name: Clean up
-        run: rm -f private_key.pem
+      - name: Run Ansible Playbook
+        run: |
+          ansible-playbook -i ansible/hosts.ini ansible/playbook.yml
