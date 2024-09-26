@@ -11,8 +11,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: actions-Ansible # Apunta a la rama correcta
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -29,11 +27,23 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: ./terraform_setup/VPC
+        working-directory: ./terraform_setup/vpc
+
+      - name: Terraform Format Check
+        run: terraform fmt --check
+        working-directory: ./terraform_setup/vpc
+
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: ./terraform_setup/vpc
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: ./terraform_setup/vpc
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-        working-directory: ./terraform_setup/VPC
+        working-directory: ./terraform_setup/vpc
 
   terraform-ec2:
     runs-on: ubuntu-latest
@@ -41,8 +51,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: actions-Ansible # Apunta a la rama correcta
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -59,23 +67,30 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: ./terraform_setup/EC2
+        working-directory: ./terraform_setup/ec2
+
+      - name: Terraform Format Check
+        run: terraform fmt
+        working-directory: ./terraform_setup/ec2
+
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: ./terraform_setup/ec2
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: ./terraform_setup/ec2
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
-        working-directory: ./terraform_setup/EC2
-
-      - name: Show Terraform Output
-        id: terraform_output
-        run: terraform output -json
-        working-directory: ./terraform_setup/EC2
+        working-directory: ./terraform_setup/ec2
 
       - name: Extract IP addresses
-        id: extract_ip
+        id: extract_ips
         run: |
-          INSTANCE_IPS=$(echo '${{ steps.terraform_output.outputs.instance_ip }}' | jq -r '.[]')
-          echo "INSTANCE_IPS=$INSTANCE_IPS" >> $GITHUB_ENV
-        working-directory: ./terraform_setup/EC2
+          echo "NGINX_IP=$(terraform output -raw nginx_instance_ip)" >> $GITHUB_ENV
+          echo "HTTPD_IP=$(terraform output -raw httpd_instance_ip)" >> $GITHUB_ENV
+        working-directory: ./terraform_setup/ec2
 
   ansible-deploy:
     runs-on: ubuntu-latest
@@ -88,20 +103,18 @@ jobs:
         run: |
           echo "${{ secrets.AWS_SSH_KEY }}" > private_key.pem
           chmod 600 private_key.pem
-
-      - name: Create hosts.ini dynamically
-        run: |
-          echo "[nginx]" > ansible/hosts.ini
-          echo "nginx ansible_host=${{ env.NGINX_IP }} ansible_user=ubuntu ansible_ssh_private_key_file=private_key.pem" >> ansible/hosts.ini
-          echo "[httpd]" >> ansible/hosts.ini
-          echo "httpd ansible_host=${{ env.HTTPD_IP }} ansible_user=ubuntu ansible_ssh_private_key_file=private_key.pem" >> ansible/hosts.ini
-
       - name: Install Ansible
         run: sudo apt-get update && sudo apt-get install -y ansible
 
-      - name: Run Ansible Playbook
+      - name: Run Ansible Playbook for Nginx
         run: |
-          ansible-playbook ansible_workflow/playbook.yml -i ansible/hosts.ini -u ubuntu --private-key private_key.pem
+          ansible-playbook ansible_workflow/playbook.yml -i "${{ env.NGINX_IP }}," -u ${{ secrets.SSH_USER }} --private-key private_key.pem --extra-vars "host=nginx"
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
+
+      - name: Run Ansible Playbook for Httpd
+        run: |
+          ansible-playbook ansible_workflow/playbook.yml -i "${{ env.HTTPD_IP }}," -u ${{ secrets.SSH_USER }} --private-key private_key.pem --extra-vars "host=httpd"
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
 
