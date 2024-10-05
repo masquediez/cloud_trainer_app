@@ -1,5 +1,5 @@
 import React from "react";
-import "./Container.css"; // Importar la hoja de estilos
+import "./Container.css";
 
 const Container = ({ children }) => {
   return <div className="centered-container">{children}</div>;

@@ -6,23 +6,15 @@ html {
   font-family: Arial, sans-serif;
 }
 
-.App {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
 .language-buttons {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 2%;
 }
 
 .language-buttons button {
-  margin: 0 5px;
-  padding: 10px;
+  margin: 0 1%;
+  padding: 2%; /* Ajustado para usar porcentaje */
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -35,18 +27,11 @@ html {
   color: white;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; /* Añadido para centrar verticalmente */
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
-  width: 100%; /* Ensure the container width is 100% of its max-width */
-  margin: 20px auto; /* Ajustado para tener un margen superior e inferior */
+@media (max-width: 600px) {
+  .container {
+    max-width: 95%;
+    padding: 3%; /* Menor padding en móviles */
+  }
 }
 
 .start-quiz {
@@ -56,15 +41,18 @@ html {
 }
 
 .start-quiz label {
-  margin-bottom: 10px;
+  margin-bottom: 2%;
 }
 
 .start-quiz-button {
-  padding: 10px 20px;
+  width: 35%;
+  height: 25%;
+  padding: 2% 5%; /* Usar porcentaje */
   border: none;
   border-radius: 5px;
   cursor: pointer;
   background-color: blue;
+  color: white;
 }
 
 .score-section {
@@ -72,41 +60,42 @@ html {
   flex-direction: column;
   align-items: center;
 }
+
 .reset-quiz-button {
-  align-items: center;
-  margin: 0 5px;
-  padding: 10px;
+  padding: 2% 5%; /* Igualar el padding con otros botones */
   border: none;
   border-radius: 5px;
   cursor: pointer;
   background-color: blue;
   color: #ffffff;
+  margin-top: 2%; /* Añadir margen para separación */
 }
 
 .timer {
-  font-size: 20px;
-  margin-bottom: 10px;
+  font-size: 2vw; /* Usar unidad responsive */
+  margin-bottom: 2%;
 }
 
 h1 {
-  font-size: 2em; /* Tamaño del título ajustado */
-  margin-bottom: 20px; /* Espacio inferior para separar el título del contenido */
-  text-align: center; /* Añadido para centrar el texto del título */
+  font-size: 4vw; /* Usar unidad responsive */
+  margin-bottom: 2%;
+  text-align: center;
 }
 
 h2 {
-  font-size: 24px;
-  margin-bottom: 10px;
+  font-size: 3vw; /* Usar unidad responsive */
+  margin-bottom: 2%;
 }
 
 .option {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 2%;
   cursor: pointer;
-  padding: 10px;
+  padding: 2%;
   border: 1px solid #ccc;
   border-radius: 5px;
+  width: 100%; /* Asegurarse de que ocupe todo el contenedor */
 }
 
 .option.selected {
@@ -124,65 +113,51 @@ h2 {
 .button-container {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  margin-top: 2%;
+  flex-wrap: wrap;
 }
 
 .verificar,
 .siguientePregunta,
-.ver-respuestas {
-  padding: 10px 20px;
+.ver-respuestas,
+.restart-button,
+.reset-quiz-button {
+  padding: 2% 5%; /* Usar porcentaje */
   border: none;
   border-radius: 5px;
   cursor: pointer;
   background-color: blue;
   color: white;
-  margin-right: 10px; /* Añadido para separar los botones */
+  margin-right: 2%; /* Añadido para separar los botones */
 }
 
 .verificar:hover,
 .siguientePregunta:hover,
-.ver-respuestas:hover {
+.ver-respuestas:hover,
+.reset-quiz-button:hover {
   background-color: #0056b3;
 }
 
 .score-percentage {
-  margin-top: 10px;
-  font-size: 18px;
+  margin-top: 2%;
+  font-size: 2vw; /* Usar unidad responsive */
   color: green;
 }
 
 .question-counter {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-.verificar,
-.siguientePregunta,
-.ver-respuestas {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  background-color: blue;
-  color: white;
-  margin-right: 10px; /* Añadido para separar los botones */
-}
-
-.verificar:hover,
-.siguientePregunta:hover,
-.ver-respuestas:hover {
-  background-color: #0056b3;
+  font-size: 2vw; /* Usar unidad responsive */
+  margin-bottom: 2%;
 }
 
 /* Ajustes para mostrar las respuestas */
 .respuesta-container {
-  margin-top: 20px;
+  margin-top: 2%;
   border-top: 2px solid #ccc;
-  padding-top: 20px;
+  padding-top: 2%;
 }
 
 .respuesta-item {
-  margin-bottom: 10px;
+  margin-bottom: 2%;
 }
 
 .respuesta-item p {
@@ -200,10 +175,10 @@ h2 {
 /* Estilos para la barra de carga */
 .progress-bar-container {
   width: 100%;
-  height: 20px;
+  height: 2%;
   background-color: #f0f0f0;
   border-radius: 10px;
-  margin-top: 5px;
+  margin-top: 2%;
   overflow: hidden;
 }
 
@@ -211,12 +186,15 @@ h2 {
   height: 100%;
   transition: width 0.3s ease;
 }
+
 input[type="number"] {
-  text-align: center; /* Centra el texto dentro del input */
-  width: 50px; /* Ancho del input, ajusta según necesites */
-  padding: 5px; /* Añade padding para mejor apariencia */
-  font-size: 16px; /* Tamaño de la fuente */
+  text-align: center;
+  width: 15%; /* Usar porcentaje */
+  padding: 2%; /* Ajustar padding */
+  font-size: 2vw; /* Usar unidad responsive */
+  border-radius: 5px;
 }
+
 input {
-  border-radius: 15px;
+  border-radius: 5px;
 }

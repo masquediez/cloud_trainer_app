@@ -137,7 +137,7 @@
   .menu li {
     border-color: black;
     border-radius: 5px;
-    border-style: double;
+    border-style: groove;
     text-align: center;
     width: 100%;
   }

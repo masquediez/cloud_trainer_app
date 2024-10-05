@@ -1,3 +1,26 @@
-.HowToStart p {
-  text-align: justify;
+.about-content {
+  display: flex;
+  flex-direction: column; /* Asegura que los elementos se apilen en una columna */
+  gap: 20px; /* Espacio entre las tarjetas */
+}
+
+.card {
+  background-color: #85b8fc; /* Fondo blanco */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para el relieve */
+  padding: 20px; /* Espacio interno */
+  border: 1px solid #ffffff; /* Borde suave */
+  display: flex; /* Usa Flexbox dentro de cada tarjeta */
+  flex-direction: column; /* Asegura que los elementos dentro de la tarjeta se apilen en una columna */
+}
+
+/* Estilos para los párrafos dentro de las tarjetas */
+.card p {
+  margin: 10px 0; /* Espacio entre párrafos */
+  line-height: 1.6; /* Mejora la legibilidad */
+}
+
+/* Opcional: Estilo para el título dentro de la tarjeta */
+.card h1 {
+  margin-bottom: 10px; /* Espacio debajo del título */
 }

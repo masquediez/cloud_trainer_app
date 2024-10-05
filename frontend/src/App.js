@@ -12,6 +12,7 @@ import Profile from "./pages/profil/Profile";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import Quiz from "./pages/Quiz";
+import QuizApp2 from "./pages/quizLevel2";
 import ChatPageAWS from "./pages/chatPageAWS";
 import ChatPageAzure from "./pages/chatPageAzure";
 import ChatPageLinux from "./pages/chatPageLinux";
@@ -58,6 +59,9 @@ function App() {
         </Route>
         <Route path="/quiz">
           {isAuthenticated ? <Quiz /> : <Redirect to="/login" />}
+        </Route>
+        <Route path="/quizLevel2">
+          {isAuthenticated ? <QuizApp2 /> : <Redirect to="/login" />}
         </Route>
         <Route path="/chat/aws">
           {isAuthenticated ? <ChatPageAWS /> : <Redirect to="/login" />}

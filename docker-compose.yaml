@@ -13,6 +13,8 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - monitoring
 
   n8n:
     image: n8nio/n8n
@@ -21,6 +23,9 @@ services:
     ports:
       - "5678:5678"
     environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=secretpassword
       - N8N_HOST=https://n8nencasa.duckdns.org
       - N8N_PORT=5678
       - WEBHOOK_URL=https://n8nencasa.duckdns.org
@@ -29,6 +34,8 @@ services:
       - postgres
     volumes:
       - n8n_data:/home/n8n/.n8n
+    networks:
+      - monitoring
 
   pgadmin:
     image: dpage/pgadmin4
@@ -43,6 +50,8 @@ services:
       - postgres
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - monitoring
 
   backend:
     build:
@@ -54,6 +63,8 @@ services:
       - NODE_ENV=production
     depends_on:
       - postgres
+    networks:
+      - monitoring
 
   frontend:
     build:
@@ -61,6 +72,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    networks:
+      - monitoring
 
   nginx:
     image: nginx:latest
@@ -71,12 +84,57 @@ services:
     depends_on:
       - frontend
       - backend
+    networks:
+      - monitoring
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+    networks:
+      - monitoring
+
+  postgres-exporter:
+    image: wrouesnel/postgres_exporter
+    container_name: postgres-exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://myusern8n:mypasswordn8n@postgres:5432/mydbn8n"
+    ports:
+      - "9187:9187"
+    depends_on:
+      - postgres
+    networks:
+      - monitoring
 
 networks:
-  app-network:
+  monitoring:
     driver: bridge
 
 volumes:
   postgres_data:
   n8n_data:
   pgadmin_data:
+  grafana_data:

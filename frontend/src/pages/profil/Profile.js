@@ -78,6 +78,9 @@ const Profile = () => {
       case "Quiz":
         history.push("/quiz");
         break;
+      case "QuizLevel2":
+        history.push("/quizLevel2");
+        break;
       default:
         history.push("/profile");
     }
@@ -116,6 +119,9 @@ const Profile = () => {
         <nav className="menu">
           <ul>
             <li onClick={() => handleChatComponentChange("Quiz")}>Easy Quiz</li>
+            <li onClick={() => handleChatComponentChange("QuizLevel2")}>
+              Quiz Level 2
+            </li>
             <li onClick={() => handleChatComponentChange("CouchAWS")}>
               AWS Training
             </li>

@@ -1,0 +1,19 @@
+.about-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Espacio entre las tarjetas */
+}
+
+.card {
+  background-color: #fff; /* Fondo blanco */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para el relieve */
+  padding: 20px; /* Espacio interno */
+  border: 1px solid #ddd; /* Borde suave */
+}
+
+.card h2 {
+  margin-bottom: 10px; /* Espacio debajo del título */
+  font-size: 1.5em; /* Tamaño del texto, ajusta según tu preferencia */
+  color: #333; /* Color del texto, ajusta según tu diseño */
+}

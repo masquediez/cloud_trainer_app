@@ -12,8 +12,9 @@ const PORT = process.env.PORT || 5050;
 // Configurar CORS
 app.use(
   cors({
-    origin: "http://localhost:3000", // Permitir solicitudes desde este origen
-    credentials: true, // Habilitar el envío de cookies
+    origin: "https://cloud-ki-assistent.duckdns.org/", // Cambia esto según tu configuración
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -44,6 +45,6 @@ app.use((err, req, res, next) => {
 });
 
 // Iniciar servidor
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Servidor escuchando en http://0.0.0.0:${PORT}`);
 });

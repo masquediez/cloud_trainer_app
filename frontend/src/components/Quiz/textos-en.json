@@ -12,5 +12,8 @@
   "pregunta": "Question:",
   "resultadoFinal": "Successes",
   "de": " of",
+  "porcentajeFinal": "Percentage of correct answers",
+  "aprobado": "You passed",
+  "reprobado": "Keep trying, you’ll get there soon.",
   "porcentajeAciertosActual": "Current success percentage: "
 }

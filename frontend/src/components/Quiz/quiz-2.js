@@ -11,6 +11,9 @@ import questionsES from "./questions-es.json";
 import questionsEN from "./questions-en.json";
 import questionsDE from "./questions-de.json";
 
+const QUESTION_COUNT = 40;
+const TIME_LIMIT = 60 * 60; // 60 minutes in seconds
+
 // Funktion zum Mischen eines Arrays
 const shuffleArray = (array) => {
   let currentIndex = array.length;
@@ -28,17 +31,14 @@ const shuffleArray = (array) => {
   return array;
 };
 
-const QuizApp = () => {
+const QuizApp2 = () => {
   const [questions, setQuestions] = useState([]);
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState("");
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(60);
-  const [answerMessage, setAnswerMessage] = useState("");
-  const [numQuestions, setNumQuestions] = useState(5);
-  const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(TIME_LIMIT);
   const [language, setLanguage] = useState("es");
   const [selectedLanguage, setSelectedLanguage] = useState("es");
   const [quizStarted, setQuizStarted] = useState(false);
@@ -55,20 +55,20 @@ const QuizApp = () => {
   useEffect(() => {
     let timer;
 
-    const tick = () => {
-      setTimeLeft((prevTime) => prevTime - 1);
-    };
-
-    if (timeLeft > 0) {
-      timer = setInterval(tick, 1000);
-    } else {
-      handleNextQuestion();
+    if (quizStarted && timeLeft > 0) {
+      timer = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 1) {
+            setShowScore(true);
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
     }
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, [timeLeft]);
+    return () => clearInterval(timer);
+  }, [quizStarted, timeLeft]);
 
   const loadQuestionsByLanguage = (lang) => {
     switch (lang) {
@@ -83,46 +83,29 @@ const QuizApp = () => {
     }
   };
 
-  const handleOptionChange = (option) => {
+  const handleOptionSelect = (option) => {
     setSelectedOption(option);
-    setShowCorrectAnswer(false);
-  };
-
-  const checkAnswer = () => {
-    if (selectedOption === selectedQuestions[currentQuestionIndex]?.answer) {
-      setAnswerMessage(textos[language].respuestaCorrecta);
-    } else {
-      setAnswerMessage(textos[language].respuestaIncorrecta);
-    }
-    setShowCorrectAnswer(true);
   };
 
   const handleNextQuestion = () => {
+    // Actualizar la puntuación basada en la respuesta seleccionada
     if (selectedOption === selectedQuestions[currentQuestionIndex]?.answer) {
       setScore((prevScore) => prevScore + 1);
     }
 
-    setCurrentPercentage(
-      ((score +
-        (selectedOption === selectedQuestions[currentQuestionIndex]?.answer
-          ? 1
-          : 0)) /
-        (currentQuestionIndex + 1)) *
-        100
+    // Calcular el porcentaje actual
+    const newPercentage = ((score / (currentQuestionIndex + 1)) * 100).toFixed(
+      2
     );
+    setCurrentPercentage(parseFloat(newPercentage));
 
-    setTimeout(() => {
-      setShowCorrectAnswer(false);
-      setAnswerMessage("");
-
-      if (currentQuestionIndex < selectedQuestions.length - 1) {
-        setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-        setSelectedOption("");
-        setTimeLeft(60);
-      } else {
-        setShowScore(true);
-      }
-    }, 500);
+    // Pasar a la siguiente pregunta o mostrar la puntuación final
+    if (currentQuestionIndex < selectedQuestions.length - 1) {
+      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+      setSelectedOption("");
+    } else {
+      setShowScore(true);
+    }
   };
 
   const handleResetQuiz = () => {
@@ -131,24 +114,20 @@ const QuizApp = () => {
     setScore(0);
     setQuizStarted(false);
     setSelectedQuestions([]);
-    setTimeLeft(60);
+    setTimeLeft(TIME_LIMIT);
     setCurrentPercentage(0);
-  };
-
-  const handleNumQuestionsChange = (e) => {
-    setNumQuestions(Number(e.target.value));
   };
 
   const startQuiz = () => {
     if (questions.length === 0) {
-      console.error("Keine Fragen geladen");
+      console.error("No questions loaded");
       return;
     }
-    setSelectedQuestions(shuffleArray(questions).slice(0, numQuestions));
+    setSelectedQuestions(shuffleArray(questions).slice(0, QUESTION_COUNT));
     setShowScore(false);
     setCurrentQuestionIndex(0);
     setScore(0);
-    setTimeLeft(60);
+    setTimeLeft(TIME_LIMIT);
     setQuizStarted(true);
   };
 
@@ -165,6 +144,12 @@ const QuizApp = () => {
 
   const getProgressColor = (percentage) => {
     return percentage >= 70 ? "green" : "red";
+  };
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
   return (
@@ -193,16 +178,6 @@ const QuizApp = () => {
       <div className="containerQuiz">
         {!quizStarted && !showScore && (
           <div className="start-quiz">
-            <label>
-              {textos[language].elegirCantidadPreguntas}
-              <input
-                type="number"
-                min="1"
-                max={questions.length}
-                value={numQuestions}
-                onChange={handleNumQuestionsChange}
-              />
-            </label>
             <button className="start-quiz-button" onClick={startQuiz}>
               {textos[language].iniciarQuiz}
             </button>
@@ -211,7 +186,7 @@ const QuizApp = () => {
         {quizStarted && !showScore && selectedQuestions.length > 0 && (
           <div>
             <div className="timer">
-              {textos[language].tiempoRestante}: {timeLeft}
+              {textos[language].tiempoRestante}: {formatTime(timeLeft)}
             </div>
             <h2>{selectedQuestions[currentQuestionIndex]?.question}</h2>
             <div>
@@ -220,26 +195,16 @@ const QuizApp = () => {
                   <div
                     key={index}
                     className={`option ${
-                      showCorrectAnswer &&
-                      option === selectedQuestions[currentQuestionIndex]?.answer
-                        ? "correct"
-                        : showCorrectAnswer &&
-                          option !==
-                            selectedQuestions[currentQuestionIndex]?.answer
-                        ? "incorrect"
-                        : selectedOption === option
-                        ? "selected"
-                        : ""
+                      selectedOption === option ? "selected" : ""
                     }`}
-                    onClick={() => handleOptionChange(option)}
+                    onClick={() => handleOptionSelect(option)}
                   >
                     <input
                       type="radio"
                       name="option"
                       value={option}
                       checked={selectedOption === option}
-                      onChange={() => handleOptionChange(option)}
-                      disabled={showCorrectAnswer}
+                      onChange={() => handleOptionSelect(option)}
                     />
                     {option}
                   </div>
@@ -248,16 +213,9 @@ const QuizApp = () => {
             </div>
             <div className="button-container">
               <button
-                className="verificar"
-                onClick={checkAnswer}
-                disabled={showCorrectAnswer}
-              >
-                {textos[language].verificarRespuesta}
-              </button>
-              {showCorrectAnswer && <p>{answerMessage}</p>}
-              <button
                 className="siguientePregunta"
                 onClick={handleNextQuestion}
+                disabled={!selectedOption}
               >
                 {textos[language].siguientePregunta}
               </button>
@@ -265,7 +223,7 @@ const QuizApp = () => {
             <div className="question-info">
               <p>
                 {textos[language].pregunta} {currentQuestionIndex + 1}{" "}
-                {textos[language].de} {numQuestions}
+                {textos[language].de} {QUESTION_COUNT}
               </p>
               <p>
                 {textos[language].porcentajeAciertosActual}
@@ -273,29 +231,12 @@ const QuizApp = () => {
                   <div
                     className="progress-bar"
                     style={{
-                      width: `${
-                        currentQuestionIndex === 0
-                          ? 0
-                          : (
-                              (score / (currentQuestionIndex + 1)) *
-                              100
-                            ).toFixed(2)
-                      }%`,
-                      backgroundColor: getProgressColor(
-                        currentQuestionIndex === 0
-                          ? 0
-                          : (score / (currentQuestionIndex + 1)) * 100
-                      ),
+                      width: `${currentPercentage}%`,
+                      backgroundColor: getProgressColor(currentPercentage),
                     }}
                   ></div>
                 </div>
-                <span>
-                  {currentQuestionIndex === 0
-                    ? "0%"
-                    : `${((score / (currentQuestionIndex + 1)) * 100).toFixed(
-                        2
-                      )}%`}
-                </span>
+                <span>{currentPercentage}%</span>
               </p>
             </div>
           </div>
@@ -304,14 +245,14 @@ const QuizApp = () => {
           <div className="score-section">
             <h2>{textos[language].tuPuntaje}</h2>
             <p>
-              {textos[language].resultadoFinal}: {score} / {numQuestions}
+              {textos[language].resultadoFinal}: {score} / {QUESTION_COUNT}
             </p>
             <p>
-              {textos[language].porcentajeFinal}: {currentPercentage.toFixed(2)}
-              %
+              {textos[language].porcentajeFinal}:{" "}
+              {((score / QUESTION_COUNT) * 100).toFixed(2)}%
             </p>
             <p>
-              {currentPercentage >= 70
+              {(score / QUESTION_COUNT) * 100 >= 70
                 ? textos[language].aprobado
                 : textos[language].reprobado}
             </p>
@@ -325,4 +266,4 @@ const QuizApp = () => {
   );
 };
 
-export default QuizApp;
+export default QuizApp2;

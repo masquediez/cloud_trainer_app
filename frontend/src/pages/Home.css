@@ -1,22 +1,60 @@
-.home .hero {
+.home-section {
+  padding: 20px;
+}
+
+.hero-banner {
   text-align: center;
-  padding: 2rem 0;
-  background-color: #f5f5f5;
+  margin-bottom: 40px;
 }
 
-.home .grid {
-  padding: 2rem 0;
-}
-
-.card-grid {
+.feature-card {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  background: #85b8fc; /* Fondo gris suave */
+  border-radius: 10px;
+  padding: 20px;
+  width: 100%; /* Asegura que ocupe el ancho del contenedor */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px; /* Espacio entre las tarjetas */
+  min-height: 150px; /* Altura mínima para asegurar que se vea el fondo */
 }
 
-.favorites {
-  margin-top: 2rem;
-  padding: 1rem;
-  background-color: #f9f9f9;
+.feature-image {
+  display: flex; /* Permite centrar la imagen */
+  justify-content: center; /* Centra horizontalmente la imagen */
+  align-items: center; /* Centra verticalmente la imagen */
+  width: 40%; /* Ajusta el ancho de la imagen */
+}
+
+.feature-image img {
+  width: 100%; /* Asegura que la imagen ocupe el ancho del contenedor */
+  height: auto; /* Mantiene la relación de aspecto */
+}
+
+.feature-description {
+  display: flex; /* Permite centrar el texto */
+  justify-content: center; /* Centra horizontalmente el texto */
+  align-items: center; /* Centra verticalmente el texto */
+  width: 50%; /* Ajusta el ancho de la descripción */
+}
+
+.feature-reverse {
+  flex-direction: row-reverse; /* Invierte el orden de la descripción y la imagen */
+}
+
+@media (max-width: 768px) {
+  .feature-card {
+    flex-direction: column; /* Cambia a una dirección de columna en pantallas pequeñas */
+    align-items: center; /* Centra el contenido */
+  }
+
+  .feature-image img {
+    width: 80%; /* Ajusta el ancho de la imagen para pantallas pequeñas */
+  }
+
+  .feature-description {
+    width: 80%; /* Ajusta el ancho de la descripción para pantallas pequeñas */
+    text-align: center; /* Centra el texto en pantallas pequeñas */
+  }
 }

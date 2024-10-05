@@ -12,5 +12,8 @@
   "pregunta": "pregunta:",
   "resultadoFinal": "Resultado final",
   "de": " de",
+  "porcentajeFinal": "Porcentaje de asiertos",
+  "aprobado": "Aprobaste",
+  "reprobado": "Sigue intentando, pronto lo lograras.",
   "porcentajeAciertosActual": "Porcentaje de aciertos actual: "
 }
