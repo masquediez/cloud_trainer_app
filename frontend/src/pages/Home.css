@@ -33,6 +33,7 @@
 }
 
 .feature-description {
+  margin: auto;
   display: flex; /* Permite centrar el texto */
   justify-content: center; /* Centra horizontalmente el texto */
   align-items: center; /* Centra verticalmente el texto */
