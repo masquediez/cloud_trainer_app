@@ -7,6 +7,10 @@
   padding: 20px; /* Añade algo de espacio alrededor de los elementos */
 }
 
+.chat-heading {
+  display: none;
+}
+
 .chat-container {
   border-color: #28a745;
   padding: 20px;

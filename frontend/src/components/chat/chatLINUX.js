@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-//import "@n8n/chat/style.css"; // Importar los estilos predeterminados
-//import "./chat.css"; // Importar los estilos personalizados
 import { createChat } from "@n8n/chat";
 
 const ChatLinux = ({ username }) => {
@@ -21,7 +19,7 @@ const ChatLinux = ({ username }) => {
         showWelcomeScreen: false,
         defaultLanguage: "de",
         initialMessages: [
-          `Hallo  ${username}    Willkommen zum Linux-Training.`,
+          `Hallo, ${username}    Willkommen zum Linux-Training.`,
         ],
         i18n: {
           en: {
