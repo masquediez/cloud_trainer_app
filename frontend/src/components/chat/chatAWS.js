@@ -18,7 +18,7 @@ const ChatAZURE = ({ username }) => {
         metadata: {},
         showWelcomeScreen: false,
         defaultLanguage: "de",
-        initialMessages: [`Hallo, ${username}    Willkommen zum AWS-Training.`],
+        initialMessages: [`Hallo,    Willkommen zum AWS-Training.`],
         i18n: {
           en: {
             title: "¡Prüfungsassistent!  ",

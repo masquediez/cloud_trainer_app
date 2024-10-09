@@ -20,6 +20,7 @@
   width: 80%;
   flex-direction: column;
   justify-content: center;
+
   height: 50px; /* Ajusta la altura */
   border: 2px solid #007bff; /* Cambia el color del borde */
   border-radius: 10px; /* Bordes redondeados */
@@ -38,6 +39,7 @@
 .chat-inputs {
   width: 99%;
   background-color: rgb(136, 199, 199);
+  border-radius: 15px;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -55,7 +57,7 @@
 .chat-window-wrapper {
   display: flex;
   flex-direction: column;
-  border-style: solid;
+  border-radius: 15px;
   width: 90%;
   background-color: #e2e2e2;
   overflow-y: hidden;

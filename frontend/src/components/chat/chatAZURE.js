@@ -18,9 +18,7 @@ const ChatAZURE = ({ username }) => {
         metadata: {},
         showWelcomeScreen: false,
         defaultLanguage: "de",
-        initialMessages: [
-          `Hallo, ${username}    Willkommen zum Azure-Training.`,
-        ],
+        initialMessages: [`Hallo,    Willkommen zum Azure-Training.`],
         i18n: {
           en: {
             title: "¡Prüfungsassistent!",

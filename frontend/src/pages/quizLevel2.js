@@ -6,7 +6,7 @@ const QuizLevel2 = () => {
   return (
     <div className="automation">
       <h1>Level 2 Azure AZ-900</h1>
-      <p>40 Fragen in 60 Minuten</p>
+      <h3>40 Fragen in 60 Minuten.</h3>
 
       <div className="quiz-card">
         <QuizApp2 />

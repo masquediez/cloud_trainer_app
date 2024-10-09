@@ -21,6 +21,7 @@ body {
 /* Nav links styles */
 .nav-links {
   display: flex;
+  flex-wrap: nowrap; /* Asegura que los botones se alineen en una fila */
   list-style: none;
   margin: 0;
   padding: 0;
@@ -29,23 +30,27 @@ body {
 }
 
 .nav-links li {
-  margin-left: 20px;
+  margin: 0 10px; /* Espaciado entre elementos de la lista */
+  /* Puedes eliminar el ancho fijo o ajustarlo según lo que necesites */
 }
 
 .nav-links a {
-  justify-content: space-between;
+  display: flex; /* Usa flex para centrar el contenido */
+  justify-content: center; /* Centra horizontalmente el texto */
+  align-items: center; /* Centra verticalmente el texto */
   color: white;
   text-decoration: none;
-  padding: 2px;
+  padding: 5px; /* Ajusta el padding según sea necesario */
   margin-top: 5px;
-  border-radius: 5px; /* Updated to 5px */
-  border: 1px solid transparent;
+  border-radius: 10px; /* Actualizado a 5px */
+  border: 1px solid rgb(255, 255, 255); /* Borde visible */
   font-size: 25px;
+  /* Puedes ajustar el ancho según sea necesario, o dejarlo como 100% */
+  width: auto; /* Asegura que el enlace ocupe solo el espacio necesario */
 }
 
 .nav-links a:hover {
   background-color: #555555;
-  border: 1px solid rgb(255, 255, 255);
 }
 
 /* Menu Toggle Styles */
@@ -85,7 +90,7 @@ body {
     transform: translateX(100%); /* Initially hidden */
     flex-direction: column;
     align-items: center;
-    padding-top: 25%; /* Space for the navbar */
+    padding-top: 10%; /* Space for the navbar */
   }
 
   .nav-links.active {
@@ -93,16 +98,17 @@ body {
   }
 
   .nav-links li {
-    margin: 5px 0; /* Space between buttons */
-    padding: 10px;
+    margin: 5px 0; /* Espacio entre botones */
+    width: 75%; /* Ancho ajustado para el menú responsive */
   }
 
   .nav-links a {
-    padding: 10px 20px; /* Adjust padding for better click area */
+    padding: 10px 0; /* Ajusta padding para mejor área de clic */
     border-radius: 5px; /* Border radius of 5px */
-    background-color: rgb(95, 94, 173); /* Transparent background */
-    border: 1px solid rgb(255, 255, 255); /* Border color */
-    color: white; /* Text color */
+    background-color: rgb(95, 94, 173); /* Color de fondo */
+    border: 1px solid rgb(255, 255, 255); /* Borde color blanco */
+    color: white; /* Color del texto */
+    width: 100%; /* Asegura que el enlace ocupe todo el ancho del li */
   }
 
   .menu-toggle {

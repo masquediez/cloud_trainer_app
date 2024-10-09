@@ -18,9 +18,7 @@ const ChatLinux = ({ username }) => {
         metadata: {},
         showWelcomeScreen: false,
         defaultLanguage: "de",
-        initialMessages: [
-          `Hallo, ${username}    Willkommen zum Linux-Training.`,
-        ],
+        initialMessages: [`Hallo,    Willkommen zum Linux-Training.`],
         i18n: {
           en: {
             title: "¡Prüfungsassistent!  ",
