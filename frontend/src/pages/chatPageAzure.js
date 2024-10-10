@@ -2,6 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import ChatAZURE from "../components/chat/chatAZURE";
 import "./chatPageAzure.css";
+import AzureTelegram from "../components/chat/azureTelegram";
 
 const ChatPageAzure = () => {
   const location = useLocation();
@@ -10,6 +11,7 @@ const ChatPageAzure = () => {
   return (
     <div className="chat-page">
       <h1>Azure Training Chat</h1>
+      <AzureTelegram />
       <ChatAZURE username={username} />
     </div>
   );

@@ -1,5 +1,7 @@
 .chat-page {
   background-color: #0000e200;
+  flex-direction: column;
+  justify-content: center;
   width: 100%;
   height: 80vh;
   overflow-x: unset;
@@ -17,7 +19,7 @@
 }
 
 .chat-inputs textarea {
-  width: 80%;
+  width: 90%;
   flex-direction: column;
   justify-content: center;
 

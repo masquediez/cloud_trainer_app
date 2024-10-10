@@ -1,0 +1,23 @@
+.bot-telegram {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 3px 10px; /* Espacio alrededor del texto */
+  margin: 3px;
+}
+
+buttones {
+  background-color: #808080; /* Gris */
+  color: white;
+  padding: 3px 10px; /* Espacio alrededor del texto */
+  margin: 3px;
+  border: none;
+  border-radius: 5px; /* Bordes redondeados */
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-block; /* Se adapta al tamaño del texto */
+}
+
+buttonT:hover {
+  background-color: cornflowerblue;
+}

@@ -6,7 +6,7 @@ const ChatLinux = ({ username }) => {
     if (username) {
       createChat({
         webhookUrl:
-          "http://192.168.178.90:5678/webhook/aafa0b9b-0a89-4038-ac78-6fb3e690551d/chat",
+          "https://n8nencasa.duckdns.org/webhook/149003a1-8fc0-4cc9-871b-4af5e10ae9f2/chat",
         webhookConfig: {
           method: "POST",
           headers: {},
