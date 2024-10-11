@@ -3,12 +3,12 @@ import "./azureTelegram.css";
 
 const AzureTelegram = () => {
   const handleRedirect = () => {
-    window.location.href = "https://t.me/n8n_test_numero_1_bot";
+    window.open("https://t.me/n8n_test_numero_1_bot", "_blank");
   };
 
   return (
     <div className="bot-telegram">
-      <buttones onClick={handleRedirect}>Ich bin auch in Telegram</buttones>
+      <button onClick={handleRedirect}>Ich bin auch in Telegram</button>
     </div>
   );
 };

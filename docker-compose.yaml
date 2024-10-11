@@ -1,7 +1,8 @@
-version: "3"
+version: "3.8"
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
     ports:
       - "5050:5050"
     volumes:
@@ -10,20 +11,12 @@ services:
       - my-network
 
   frontend:
-    build: ./frontend
-    volumes:
-      - ./frontend:/app
+    build:
+      context: ./frontend
     ports:
       - "3000:3000"
-    networks:
-      - my-network
-
-  nginx:
-    build: ./nginx
     volumes:
-      - ./nginx:/etc/nginx/conf.d
-    ports:
-      - "80:80"
+      - ./frontend:/app
     networks:
       - my-network
 

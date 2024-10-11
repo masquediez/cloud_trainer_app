@@ -6,7 +6,7 @@ const ChatAZURE = ({ username }) => {
     if (username) {
       createChat({
         webhookUrl:
-          "https://n8nencasa.duckdns.org/webhook/d8473c33-e260-4715-84b9-ec494e9ef83b/chat",
+          "https://n8nencasa.duckdns.org/webhook/b1e5a132-e66b-4ee4-8c6e-3336a66b1c3e/chat",
         webhookConfig: {
           method: "POST",
           headers: {},
